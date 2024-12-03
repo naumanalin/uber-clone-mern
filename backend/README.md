@@ -10,6 +10,11 @@ This repository contains the backend code for an Uber Clone application. It is b
 1. [.env Variables](#env-variables)
 2. [Project Setup](#project-setup)
 3. [API Endpoints](#api-endpoints)
+   1. [User API](#user-api)
+      1. [Register User](#register-user-api)
+      2. [Login User](#login-user-api)
+      3. [Get Profile Info](#get-profile-info)
+      4. [Logout](#logout)
 4. [File Structure](#file-structure)
 5. [Commands](#commands)
 
@@ -41,16 +46,24 @@ git clone https://github.com/your-username/uber-clone-backend.git
 ```
 cd uber-clone-backend/backend
 ```
-### Setp 3: Enter this command 
+### Step 3: Enter this command 
 Enter this command to install all packages
 ```
 npm install
 ```
 
+### Step 4: Run Command
+Open terminal in backend folder enter this command to run your backend server
+```
+npm run dev
+```
+
 # api-endpoints
 #### Your all API's endpoints are
 
-## 1. Registration API
+## 1. User API
+
+## 1.1 Register User API
 
 This API allows users to register an account by providing their email, firstname, secondname, and password. The registration endpoint ensures that the provided data is valid and stores the user information in the MongoDB database. It also checks if the user already exists to avoid duplicates.
 
