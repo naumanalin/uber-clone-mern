@@ -1,6 +1,6 @@
-# User Registration API Documentation
+# Uber Clone Backend Documentation
 
-## Overview
+## Registration API
 
 This API allows users to register an account by providing their `email`, `firstname`, `secondname`, and `password`. The registration endpoint ensures that the provided data is valid and stores the user information in the MongoDB database. It also checks if the user already exists to avoid duplicates.
 
