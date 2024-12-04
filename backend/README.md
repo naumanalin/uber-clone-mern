@@ -19,7 +19,6 @@ This repository contains the backend code for an Uber Clone application. It is b
 5. [Commands](#commands)
 
 ---
-
 ## .env Variables
 
 To run this project, you need to set up a `.env` file in the root directory with the following variables:
