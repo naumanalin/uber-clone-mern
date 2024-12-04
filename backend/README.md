@@ -13,6 +13,8 @@ This repository contains the backend code for an Uber Clone application. It is b
    1. [User API](#user-api)
       1. [Register User](#register-user)
       2. [Login User](#login-user)
+      3. [Get User Profile](#get-user-profile)
+      4. [Logout User](#logout-user)
 4. [File Structure](#file-structure)
 5. [Commands](#commands)
 
@@ -144,5 +146,84 @@ The request body should be in JSON format and must include the following fields:
 {
   "success": false,
   "message": "Password did not match"
+}
+```
+
+## Get User Profile
+This API allows authenticated users to retrieve their profile information. The profile data is typically obtained from the req.user object, which is populated during the authentication middleware process.
+
+### Endpoint
+```http
+GET /users/profile
+```
+Authentication
+Requires a valid JWT token.
+The token must be sent in the Authorization header as a Bearer token.
+## Response
+### Success (200 OK)
+Returns the user profile information.
+
+```json
+{
+  "success": true,
+  "user": {
+    "id": "123456789",
+    "fullname": {
+      "firstname": "John",
+      "secondname": "Doe"
+    },
+    "email": "john.doe@example.com"
+  }
+}
+```
+
+### Error (404 Not Found)
+If the req.user object is not found.
+
+```json
+{
+  "success": false,
+  "message": "User profile not found"
+}
+```
+## Logout User
+This API logs out the authenticated user by clearing their JWT token and blacklisting it to prevent future usage.
+
+### Endpoint
+```http
+POST /users/logout
+```
+Authentication
+Requires a valid JWT token.
+The token is expected in the following places:
+Authorization header as a Bearer token.
+token cookie (if used).
+## Response
+### Success (200 OK)
+Confirms that the user has been logged out.
+
+``` json
+{
+  "success": true,
+  "message": "Logged out"
+}
+```
+### Error (400 Bad Request)
+If no token is provided in the request.
+
+```json
+Copy code
+{
+  "success": false,
+  "message": "No token provided"
+}
+```
+### Error (500 Internal Server Error)
+If an error occurs while blacklisting the token.
+
+```json
+{
+  "success": false,
+  "message": "An error occurred while logging out"
 }
 ```
