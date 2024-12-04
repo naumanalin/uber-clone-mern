@@ -7,16 +7,16 @@ This repository contains the backend code for an Uber Clone application. It is b
 ---
 
 ## Table of Contents
-1. [.env Variables](#env-variables)
+1. [.env Variables](#.env-variables)
 2. [Project Setup](#project-setup)
 3. [API Endpoints](#api-endpoints)
    1. [User API](#user-api)
-      1. [Register User](#register-user-api)
-      2. [Login User](#login-user-api)
-      3. [Get Profile Info](#get-profile-info)
-      4. [Logout](#logout)
+      1. [Register User](#register-user)
+      2. [Login User](#login-user)
 4. [File Structure](#file-structure)
 5. [Commands](#commands)
+
+
 
 ---
 ## .env Variables
@@ -60,9 +60,9 @@ npm run dev
 # api-endpoints
 #### Your all API's endpoints are
 
-## 1. User API
+## User API
 
-## 1.1 Register User API
+## Register User
 
 This API allows users to register an account by providing their email, firstname, secondname, and password. The registration endpoint ensures that the provided data is valid and stores the user information in the MongoDB database. It also checks if the user already exists to avoid duplicates.
 
@@ -95,4 +95,54 @@ Example request body:
   "email": "john.doe@example.com",
   "password": "securepassword123"
 }
+```
 
+## Login User
+
+This API allows users to log into their accounts by providing their registered email and password. Upon successful authentication, the system generates a **JWT token** and sends it back to the user in the response. This token can be used for authentication in subsequent requests.
+
+### Endpoint
+
+```http
+POST /users/login
+```
+### Request Body
+The request body should be in JSON format and must include the following fields:
+
+```json
+{
+  "email": "user@example.com",
+  "password": "yourpassword"
+}
+```
+
+## Response
+### Success (200 OK)
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+``` 
+### Error (400 Bad Request)
+```json
+{
+  "success": false,
+  "message": "Email and password are required"
+}
+```
+### Error (404 Not Found)
+```json
+{
+  "success": false,
+  "message": "User not found"
+}
+```
+### Error (400 Bad Request)
+```json
+{
+  "success": false,
+  "message": "Password did not match"
+}
+```
