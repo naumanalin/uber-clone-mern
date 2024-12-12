@@ -150,13 +150,36 @@ const loginCaptain = async (req, res, next) => {
 };
 
 // --------------------------------------------------------------------------------------------------------------------------
-const getCaptainProfile = async (req, res, next)=>{
+const getCaptainProfile = async (req, res, next) => {
+    if (!req.captain) {
+        return res.status(401).json({ success: false, message: "Unauthorized access" });
+    }
 
-}
+    return res.status(200).json({ success: true, captain: req.captain });
+};
+
 // --------------------------------------------------------------------------------------------------------------------------
-const logoutCaptain = async (req, res, next)=>{
+const logoutCaptain = async (req, res, next) => {
+    try {
+        const token = req.cookies?.token || req.headers.authorization?.split(' ')[1];
 
-}
+        if (!token) {
+            return res.status(400).json({ success: false, message: "No token provided" });
+        }
+
+        // Blacklist the token
+        await blackListTokenModel.create({ token });
+
+        // Clear the cookie
+        res.clearCookie('token');
+
+        return res.status(200).json({ success: true, message: "Logout successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: "An error occurred during logout" });
+    }
+};
+
 // --------------------------------------------------------------------------------------------------------------------------
 
 module.exports = {
