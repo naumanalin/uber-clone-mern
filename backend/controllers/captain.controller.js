@@ -9,7 +9,14 @@ const { validationResult } = require('express-validator');
 const registerCaptain = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(400).json({
+            success: false,
+            message: "Validation errors",
+            errors: errors.array().map(err => ({
+                field: err.param,
+                message: err.msg
+            }))
+        });
     }
 
     const { fullname, email, password, vehicle, location } = req.body;
@@ -62,6 +69,7 @@ const registerCaptain = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: `Captain account created successfully with email: ${email}`,
+            captain: newCaptain,
         });
     } catch (error) {
         console.error(error);
@@ -73,9 +81,74 @@ const registerCaptain = async (req, res) => {
 };
 
 // --------------------------------------------------------------------------------------------------------------------------
-const loginCaptain = async (req, res, next)=>{
+const loginCaptain = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            message: "Validation errors",
+            errors: errors.array().map(err => ({
+                field: err.param,
+                message: err.msg
+            }))
+        });
+    }
 
-}
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({
+            success: false,
+            message: 'All fields are required to login'
+        });
+    }
+
+    try {
+        // Find captain by email
+        const captain = await captainModel.findOne({ email }).select('+password'); // Explicitly select password
+        if (!captain) {
+            return res.status(404).json({
+                success: false,
+                message: "Captain not found with this email"
+            });
+        }
+
+        // Compare passwords
+        const isPasswordMatch = await captain.comparePassword(password);
+        if (!isPasswordMatch) {
+            return res.status(400).json({
+                success: false,
+                message: "Password did not match"
+            });
+        }
+
+        // Generate authentication token
+        const token = captain.generateAuthToken();
+
+        return res.status(200).json({
+            success: true,
+            message: "Login successful",
+            token,
+            captain: {
+                id: captain._id,
+                fullname: captain.fullname,
+                email: captain.email,
+                vehicle: captain.vehicle,
+                location: captain.location,
+                status: captain.status,
+                socketId: captain.socketId,
+            }
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred during login"
+        });
+    }
+};
+
 // --------------------------------------------------------------------------------------------------------------------------
 const getCaptainProfile = async (req, res, next)=>{
 

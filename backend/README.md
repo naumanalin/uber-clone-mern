@@ -331,3 +331,117 @@ Validation Error (400):
     "message": "An error occurred while registering the captain"
 }
 ```
+
+
+
+## Captain Login
+
+### Route
+`POST /captains/login`
+
+### Description
+This endpoint allows a captain to log in by providing valid credentials.
+
+---
+
+### Request Format
+#### Headers
+- `Content-Type: application/json`
+
+#### Body
+```json
+{
+  "email": "example@example.com",
+  "password": "yourpassword"
+}
+```
+
+## Responses
+### 1. Success Response
+Status Code: 200 OK
+
+Example:
+
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "token": "jwt_token_here",
+  "captain": {
+    "id": "captain_id",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "example@example.com",
+    "vehicle": {
+      "color": "Red",
+      "plate": "ABC-123",
+      "capacity": 4,
+      "vehicleType": "car"
+    },
+    "location": {
+      "ltd": 32.123,
+      "lng": 74.123
+    },
+    "status": "inactive",
+    "socketId": "socket_id_here"
+  }
+}
+```
+
+### 2. Validation Error Response
+Status Code: 400 Bad Request
+
+Example:
+
+```json
+{
+  "success": false,
+  "message": "Validation errors",
+  "errors": [
+    {
+      "field": "email",
+      "message": "Invalid Email"
+    },
+    {
+      "field": "password",
+      "message": "Password must be at least 6 characters long"
+    }
+  ]
+}
+```
+
+### 3. Incorrect Credentials Response
+Status Code: 400 Bad Request
+
+Example:
+
+```json
+{
+  "success": false,
+  "message": "Password did not match"
+}
+```
+### 4. Captain Not Found Response
+Status Code: 404 Not Found
+
+Example:
+
+```json
+{
+  "success": false,
+  "message": "Captain not found with this email"
+}
+```
+### 5. Server Error Response
+Status Code: 500 Internal Server Error
+
+Example:
+
+```json
+{
+  "success": false,
+  "message": "An error occurred during login"
+}
+```
