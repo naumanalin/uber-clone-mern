@@ -103,24 +103,33 @@ const getUserProfile = async (req, res, next) => {
     }
 }
 // ----------------------------------------------------------------------------------------------------------
-async (req, res) => {
+const logoutUser = async (req, res) => {
     try {
-        res.clearCookie('token');
-
         const token = req.cookies.token || (req.headers.authorization && req.headers.authorization.split(" ")[1]);
 
         if (!token) {
             return res.status(400).json({ success: false, message: "No token provided" });
         }
 
+        // Check if the token is already blacklisted
+        const isBlacklisted = await blackListTokenModel.findOne({ token });
+        if (isBlacklisted) {
+            return res.status(400).json({ success: false, message: "Token is already blacklisted" });
+        }
+
+        // Add the token to the blacklist
         await blackListTokenModel.create({ token });
 
-        return res.status(200).json({ success: true, message: "Logged out" });
+        // Clear the token cookie
+        res.clearCookie('token', { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+
+        return res.status(200).json({ success: true, message: "Logged out successfully" });
     } catch (error) {
-        console.error(error);
+        console.error("Logout Error:", error);
         return res.status(500).json({ success: false, message: "An error occurred while logging out" });
     }
 };
+
 // --------------------------------------------------------------------------------------------------------
 
 module.exports = {

@@ -15,6 +15,9 @@ This repository contains the backend code for an Uber Clone application. It is b
       2. [Login User](#login-user)
       3. [Get User Profile](#get-user-profile)
       4. [Logout User](#logout-user)
+   2. [Captain API](#captain-api)
+      1. [Captain Registration](#captain-registration)
+      2. [Captain Login](#captain-login)
 4. [File Structure](#file-structure)
 5. [Commands](#commands)
 
@@ -225,5 +228,106 @@ If an error occurs while blacklisting the token.
 {
   "success": false,
   "message": "An error occurred while logging out"
+}
+```
+
+## Captain Registration
+
+This API allows captains to register themselves by providing their personal details, vehicle information, and optional location data. The system validates the input and stores the captain's information in the database securely.
+
+### Endpoint
+
+**POST** `/api/captains/register`
+
+---
+<!-- ------------------------------------------------------------------------------------------------------------------------- -->
+### Request Body
+
+The request body should be in JSON format and must include the following fields:
+
+#### Personal Details
+| Field       | Type   | Required | Description                            |
+|-------------|--------|----------|----------------------------------------|
+| `firstname` | String | Yes      | The first name of the captain (min 3 chars). |
+| `lastname`  | String | No       | The last name of the captain (optional, min 3 chars). |
+
+#### Contact Information
+| Field       | Type   | Required | Description                            |
+|-------------|--------|----------|----------------------------------------|
+| `email`     | String | Yes      | The email address of the captain (must be valid and unique). |
+| `password`  | String | Yes      | The password for the captain's account (min 6 chars). |
+
+#### Vehicle Details
+| Field        | Type   | Required | Description                            |
+|--------------|--------|----------|----------------------------------------|
+| `color`      | String | Yes      | The color of the vehicle (min 3 chars). |
+| `plate`      | String | Yes      | The plate number of the vehicle (min 3 chars). |
+| `capacity`   | Number | Yes      | The capacity of the vehicle (min 1).   |
+| `vehicleType`| String | Yes      | The type of vehicle (`car`, `motorcycle`, or `auto`). |
+
+#### Location (Optional)
+| Field | Type   | Required | Description                           |
+|-------|--------|----------|---------------------------------------|
+| `ltd` | Number | No       | The latitude of the captain's location. |
+| `lng` | Number | No       | The longitude of the captain's location. |
+
+---
+
+### Example Request Body
+
+```json
+{
+  "firstname": "John",
+  "lastname": "Doe",
+  "email": "john.doe@example.com",
+  "password": "securepassword",
+  "vehicle": {
+    "color": "Blue",
+    "plate": "XYZ123",
+    "capacity": 4,
+    "vehicleType": "car"
+  },
+  "location": {
+    "ltd": 40.7128,
+    "lng": -74.0060
+  }
+}
+```
+## Response
+### Success Response
+```json
+{
+  "success": true,
+  "message": "Captain account created successfully with email: john.doe@example.com"
+}
+```
+### Error Responses
+Validation Error (400):
+
+```json
+{
+    "errors": [
+        {
+            "msg": "First name must be at least 3 characters long",
+            "param": "firstname",
+            "location": "body"
+        }
+    ]
+}
+```
+### Duplicate Email (400):
+
+```json
+{
+    "success": false,
+    "message": "Captain already exists, you can login"
+}
+```
+### Internal Server Error (500):
+
+```json
+{
+    "success": false,
+    "message": "An error occurred while registering the captain"
 }
 ```
