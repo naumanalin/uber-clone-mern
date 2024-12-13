@@ -18,6 +18,8 @@ This repository contains the backend code for an Uber Clone application. It is b
    2. [Captain API](#captain-api)
       1. [Captain Registration](#captain-registration)
       2. [Captain Login](#captain-login)
+      3. [Get Captain Profile](#get-captain-profile)
+      4. [Logout Captain](#logout-captain)
 4. [File Structure](#file-structure)
 5. [Commands](#commands)
 
@@ -61,7 +63,7 @@ Open terminal in backend folder enter this command to run your backend server
 ```
 npm run dev
 ```
-
+***
 # api-endpoints
 #### Your all API's endpoints are
 
@@ -101,7 +103,7 @@ Example request body:
   "password": "securepassword123"
 }
 ```
-
+***
 ## Login User
 
 This API allows users to log into their accounts by providing their registered email and password. Upon successful authentication, the system generates a **JWT token** and sends it back to the user in the response. This token can be used for authentication in subsequent requests.
@@ -151,7 +153,7 @@ The request body should be in JSON format and must include the following fields:
   "message": "Password did not match"
 }
 ```
-
+***
 ## Get User Profile
 This API allows authenticated users to retrieve their profile information. The profile data is typically obtained from the req.user object, which is populated during the authentication middleware process.
 
@@ -189,6 +191,8 @@ If the req.user object is not found.
   "message": "User profile not found"
 }
 ```
+
+***
 ## Logout User
 This API logs out the authenticated user by clearing their JWT token and blacklisting it to prevent future usage.
 
@@ -231,6 +235,8 @@ If an error occurs while blacklisting the token.
 }
 ```
 
+***
+***
 ## Captain Registration
 
 This API allows captains to register themselves by providing their personal details, vehicle information, and optional location data. The system validates the input and stores the captain's information in the database securely.
@@ -333,7 +339,7 @@ Validation Error (400):
 ```
 
 
-
+***
 ## Captain Login
 
 ### Route
@@ -443,5 +449,62 @@ Example:
 {
   "success": false,
   "message": "An error occurred during login"
+}
+```
+***
+## Get Captain Profile
+This API retrieves the logged-in captain's profile information.
+
+**Endpoint:** `GET /captains/profile`
+
+**Response**
+
+**Success (200 OK)**
+```json
+{
+  "success": true,
+  "captain": {
+    "id": "captain_id",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.doe@example.com",
+    "vehicle": {
+      "color": "Blue",
+      "plate": "XYZ123",
+      "capacity": 4,
+      "vehicleType": "car"
+    },
+    "location": {
+      "ltd": 40.7128,
+      "lng": -74.0060
+    }
+  }
+}
+```
+
+***
+## Logout Captain
+This API logs out the captain and blacklists the JWT token.
+
+**Endpoint:** `POST /captains/logout`
+
+Response
+
+Success (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Logout successfully"
+}
+```
+Error (400 Bad Request)
+
+```json
+{
+  "success": false,
+  "message": "No token provided"
 }
 ```
